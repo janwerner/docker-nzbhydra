@@ -10,7 +10,7 @@ RUN addgroup -g 1550 apps && \
  chown -R apps:apps /config && \
  rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 
-EXPOSE 5050
+EXPOSE 5075
 USER apps
 VOLUME /config
 ENTRYPOINT ["/sbin/tini", "--"]
