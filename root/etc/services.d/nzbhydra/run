@@ -1,0 +1,3 @@
+#!/usr/bin/execlineb -P
+s6-setuidgid apps
+/usr/bin/python /usr/local/bin/nzbhydra/nzbhydra.py --nobrowser --config /config/nzbhydra.cfg --database /config/nzbhydra.db

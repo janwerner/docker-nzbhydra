@@ -1,17 +1,17 @@
-FROM alpine:3.4
+FROM ubuntu:xenial
 MAINTAINER CPressland <mail@cpressland.io>
 
-RUN addgroup -g 1550 apps && \
- adduser -S -H -u 1550 -G apps apps && \
- apk --no-cache add python git tini && \
+ADD root /
+
+RUN addgroup --gid 1550 apps && \
+ adduser --system --no-create-home --uid 1550 --gid 1550 apps && \
+ apt-get update && \
+ apt-get -y upgrade && \
+ apt-get -y install curl git python && \
+ curl -L 'https://github.com/just-containers/s6-overlay/releases/download/v1.18.1.5/s6-overlay-amd64.tar.gz' -o /tmp/s6-overlay-amd64.tar.gz && \
+ tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && \
  git clone https://github.com/theotherp/nzbhydra.git /usr/local/bin/nzbhydra/ && \
  chown -R apps:apps /usr/local/bin/nzbhydra/ && \
- mkdir -p /config && \
- chown -R apps:apps /config && \
- rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
+ apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-EXPOSE 5075
-USER apps
-VOLUME /config
-ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["/usr/local/bin/nzbhydra/nzbhydra.py", "--nobrowser", "--config", "/config/nzbhydra.cfg", "--database", "/config/nzbhydra.db"]
+ENTRYPOINT ["/init"]
